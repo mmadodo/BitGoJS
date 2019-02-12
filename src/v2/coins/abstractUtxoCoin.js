@@ -85,6 +85,17 @@ class AbstractUtxoCoin extends BaseCoin {
     }
   }
 
+  getLatestBlockHeight(reqId, callback) {
+    return co(function *() {
+      if (reqId) {
+        this.bitgo._reqId = reqId;
+      }
+      const chainhead = yield this.bitgo.get(this.url('/public/block/latest')).result();
+      const blockHeight = chainhead.height;
+      return blockHeight;
+    }).call(this).asCallback(callback);
+  }
+
   postProcessPrebuild(prebuild, callback) {
     return co(function *() {
       if (prebuild._reqId) {
